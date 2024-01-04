@@ -1,0 +1,128 @@
+---
+title: "R Shiny ile Hava Durumu"
+author: "Merve KARACAN - 2023900104"
+output:
+  html_document: default
+  pdf_document: default
+--- 
+
+## Giriş
+
+Projede <a href="https://rapidapi.com/">RapidApi.com</a> üzerinden <a href="https://rapidapi.com/weatherapi/api/weatherapi-com/">WeatherAPI.com</a> API kullanılarak anlık hava durumu ve 2 gün'e kadar hava durumu tahmini yapmaktadır.
+
+- Türkiyede bulunan 81 il baz alınmıştır.
+- R Shiny kullanılarak bir web uygulaması haline getirilmiştir.
+
+<h3>Anlık hava durumu için gelen veri örneği</h3>
+<pre>
+  <code>
+ {
+  "location": {
+    "name": "Izmir",
+    "region": "Izmir",
+    "country": "Turkey",
+    "lat": 38.41,
+    "lon": 27.14,
+    "tz_id": "Europe/Istanbul",
+    "localtime_epoch": 1704397447,
+    "localtime": "2024-01-04 22:44"
+  },
+  "current": {
+    "last_updated_epoch": 1704396600,
+    "last_updated": "2024-01-04 22:30",
+    "temp_c": 14,
+    "temp_f": 57.2,
+    "is_day": 0,
+    "condition": {
+      "text": "Clear",
+      "icon": "//cdn.weatherapi.com/weather/64x64/night/113.png",
+      "code": 1000
+    },
+    "wind_mph": 2.2,
+    "wind_kph": 3.6,
+    "wind_degree": 10,
+    "wind_dir": "N",
+    "pressure_mb": 1012,
+    "pressure_in": 29.88,
+    "precip_mm": 0.12,
+    "precip_in": 0,
+    "humidity": 77,
+    "cloud": 0,
+    "feelslike_c": 13.6,
+    "feelslike_f": 56.4,
+    "vis_km": 10,
+    "vis_miles": 6,
+    "uv": 1,
+    "gust_mph": 10.5,
+    "gust_kph": 16.9
+  }
+}
+  </code>
+</pre>
+
+
+## R Shiny
+
+Shiny, R kullanıcılarına, hem sunucu tarafı mantığı hem de istemci tarafı arayüzü için R kodunu kullanarak minimal çaba ile etkileşimli web uygulamaları oluşturma imkanı sağlar.
+
+Shiny'yi kullanabilmek için R'da shiny paketini yüklemeniz gerekiyor. Eğer henüz yüklü değilse, R konsolunda aşağıdaki komutu kullanarak yükleyebilirsiniz: `install.packages("shiny")`
+
+Shiny paketi, kullanıcı arayüzünün (UI) altındaki R kodundaki değişikliklere tepki veren reaktif web uygulamaları oluşturmak için fonksiyonlar ve araçlar sağlar.
+
+R Shiny'nin temel özellikleri;
+
+- Reaktif Programlama: Shiny, reaktif programlama prensiplerine dayanır. Bu, bir uygulamanın kullanıcı etkileşimlerine anında tepki verebilmesini sağlar. Kullanıcı bir giriş yaparsa veya bir seçenek değiştirirse, uygulama otomatik olarak güncellenir.
+
+- UI (Kullanıcı Arayüzü): Shiny uygulamalarında kullanıcı arayüzü tanımlamak oldukça kolaydır. R kodu kullanarak düzeni, giriş formları, grafikleri ve diğer öğeleri belirleyebilirsiniz.
+
+- Server Logic (Sunucu Mantığı): Kullanıcı arayüzü ile ilişkilendirilmiş olan sunucu mantığı, kullanıcının etkileşimlerine nasıl yanıt verileceğini belirler. R kodu kullanarak işlemler gerçekleştirilir ve sonuçlar kullanıcı arayüzüne yansıtılır.
+
+- Grafik ve Veri Görselleştirme: Shiny, R'deki grafik paketleri ile entegre bir şekilde çalışır. Bu nedenle, uygulamalarınızda istediğiniz türden grafik ve veri görselleştirmelerini kolayca kullanabilirsiniz.
+
+- Modüler Tasarım: Shiny uygulamalarını modüler bir şekilde tasarlamak mümkündür. Bu, büyük ve karmaşık uygulamalar geliştirmenizi kolaylaştırır.
+
+## R ile API Entegrasyonu
+
+R dilinde HTTP istekleri yapmak için `httr` paketi oldukça kullanışlıdır. API'ye GET HTTP istekleri göndermek için bu paket kullanılmıştır.
+
+- GET isteği örneği
+response <- GET("https://api.example.com/data")
+
+API anahtarı için dökümantasyondan yararlanarak. API Key ve Host kullanılmıştır.
+
+Şu anki hava durumu ve 2 günlük hava tahmini için iki tane API isteği oluşturulmuş ve kullanılmıştır.
+
+API response isteklerinde gelen JSON veya XML verisi `content(response, "parsed")` ile uygun R veri yapısına dönüştürülür. 
+
+## UI için Kullanılan Bileşenler
+
+1. fluidPage: Shiny uygulaması için duyarlı responsive bir sayfa oluşturur. Esnek ve duyarlı bir düzen sağlaması nedeniyle Shiny uygulamaları oluşturmak için yaygın bir tercihtir.
+
+2. sidebarLayout: Bir ana panel ve bir kenar paneli içeren bir düzen oluşturmak için kullanılır. 
+
+3. selectInput: Kullanıcıya açılır menü (drop-down menu) de seçim yapma olanağı sunan bir giriş alanıdır.
+
+4. actionButton: Kullanıcının bir eylemi başlatmasını sağlayan bir butondur.
+
+5. textOutput: Metin tabanlı çıktı göstermek için kullanılır.
+
+6. uiOutput: Dinamik olarak UI öğelerini oluşturmak için server tarafından üretilen bir çıktıyı içerir.
+
+7. tableOutput: Tablo tabanlı çıktılar için kullanılır.
+
+8. plotOutput: Grafiksel çıktı göstermek için kullanılır.
+
+## Sonuç
+
+Açılır menü (drop-down menu)den seçilen Türkiye ilinin şu anki hava durumu detayları ve istenirse 2 günlük hava tahmini tablo ve grafiği gösterilmektedir.
+
+Location, Region, Latitude, Longitude, Local Time, Temperature, Weather, Wind Speed, Humidity, Weather Icon, Feels Like, Pressure verileri gösterilmiştir.
+
+![Görsel Açıklaması](images/webAppSS.png)
+
+## Kaynakça
+
+1. https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html
+2. https://rapidapi.com/weatherapi/api/weatherapi-com/
+3. https://epirhandbook.com/tr/shiny-ile-g%C3%B6sterge-panelleri.html
+4. https://acikenerji.github.io/R-shiny/index.html
