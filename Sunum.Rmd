@@ -91,6 +91,12 @@ Location, Region, Latitude, Longitude, Local Time, Temperature, Weather, Wind Sp
 
 ![Web Görseli](images/webAppSS.png)
 
+------------------------------------------------------------------------
+
+## Github
+
+<https://github.com/MerveKrcan/weatherShiny>
+
 ## Kaynakça
 
 1.  <https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html>
